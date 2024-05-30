@@ -1,4 +1,4 @@
-﻿namespace AppBlog.Models.Domain
+﻿namespace AppBlog.Utils
 {
     public class ResponseError
     {
