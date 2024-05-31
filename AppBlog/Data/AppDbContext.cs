@@ -1,7 +1,6 @@
 ﻿using AppBlog.Models.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace AppBlog.Data
 {

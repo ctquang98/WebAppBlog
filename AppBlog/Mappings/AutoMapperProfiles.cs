@@ -9,6 +9,9 @@ namespace AppBlog.Mappings
         public AutoMapperProfiles() 
         {
             CreateMap<Boxer, BoxerDto>().ReverseMap();
+            CreateMap<AppUser, UserDto>()
+                //.ForMember(userDto => userDto.Nickname, option => option.MapFrom(appUser => appUser.UserName))
+                .ReverseMap();
         }
     }
 }
