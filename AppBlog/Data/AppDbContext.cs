@@ -12,6 +12,8 @@ namespace AppBlog.Data
         }
 
         public DbSet<Boxer> boxers { get; set; }
+        public DbSet<UserFollowing> UserFollowings { get; set; }
+        public DbSet<UserFollower> UserFollowers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -27,6 +29,24 @@ namespace AppBlog.Data
             };
 
             builder.Entity<Boxer>().HasData(_boxers);
+
+            builder.Entity<UserFollowing>(x =>
+            {
+                x.HasKey(j => new { j.ObserverId, j.TargetId });
+                x.HasOne(x => x.Observer)
+                .WithMany(x => x.followings)
+                .HasForeignKey(x => x.ObserverId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            builder.Entity<UserFollower>(x =>
+            {
+                x.HasKey(j => new { j.ObserverId, j.TargetId });
+                x.HasOne(x => x.Observer)
+                .WithMany(x => x.followers)
+                .HasForeignKey(x => x.ObserverId)
+                .OnDelete(DeleteBehavior.NoAction);
+            });
         }
     }
 }

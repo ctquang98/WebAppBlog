@@ -5,4 +5,6 @@
     InvalidPassword,
     EmailExisted,
     RegisterFailed,
+    InvalidUserName,
+    ErrorEditUser,
 }

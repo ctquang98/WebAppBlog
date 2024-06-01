@@ -4,6 +4,7 @@ using AppBlog.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppBlog.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240601133008_1")]
+    partial class _1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,39 +111,24 @@ namespace AppBlog.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a2844cc0-e454-460b-8c19-29fd0db52dff"),
+                            Id = new Guid("9412a41a-beaa-41ed-9eb8-8635cbe4c9c7"),
                             Name = "LongG"
                         },
                         new
                         {
-                            Id = new Guid("e3eab46a-2209-4188-b305-c03e2ff67d34"),
+                            Id = new Guid("5763b37f-4bbd-4c1d-921c-0d42a133157e"),
                             Name = "Decal"
                         },
                         new
                         {
-                            Id = new Guid("e945a0c9-0aa0-4bb9-a017-a3c55dafa4c5"),
+                            Id = new Guid("b269f015-a5f2-4ca1-9eb3-cbbcc8b1a990"),
                             Name = "J98"
                         },
                         new
                         {
-                            Id = new Guid("7eec21f6-20ac-410f-8d87-2b6ebc36298c"),
+                            Id = new Guid("3f69a6d4-6ce1-4df9-81df-056ac37e959e"),
                             Name = "Yangby"
                         });
-                });
-
-            modelBuilder.Entity("AppBlog.Models.Domain.UserFollower", b =>
-                {
-                    b.Property<string>("ObserverId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TargetId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ObserverId", "TargetId");
-
-                    b.HasIndex("TargetId");
-
-                    b.ToTable("UserFollowers");
                 });
 
             modelBuilder.Entity("AppBlog.Models.Domain.UserFollowing", b =>
@@ -291,25 +279,6 @@ namespace AppBlog.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("AppBlog.Models.Domain.UserFollower", b =>
-                {
-                    b.HasOne("AppBlog.Models.Domain.AppUser", "Observer")
-                        .WithMany("followers")
-                        .HasForeignKey("ObserverId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("AppBlog.Models.Domain.AppUser", "Target")
-                        .WithMany()
-                        .HasForeignKey("TargetId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Observer");
-
-                    b.Navigation("Target");
-                });
-
             modelBuilder.Entity("AppBlog.Models.Domain.UserFollowing", b =>
                 {
                     b.HasOne("AppBlog.Models.Domain.AppUser", "Observer")
@@ -382,8 +351,6 @@ namespace AppBlog.Migrations
 
             modelBuilder.Entity("AppBlog.Models.Domain.AppUser", b =>
                 {
-                    b.Navigation("followers");
-
                     b.Navigation("followings");
                 });
 #pragma warning restore 612, 618
