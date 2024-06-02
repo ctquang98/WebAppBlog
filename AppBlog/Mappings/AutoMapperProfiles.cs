@@ -8,7 +8,6 @@ namespace AppBlog.Mappings
     {
         public AutoMapperProfiles() 
         {
-            CreateMap<Boxer, BoxerDto>().ReverseMap();
             CreateMap<AppUser, UserDto>().ReverseMap();
             CreateMap<AppUser, UserListDto>();
             CreateMap<UserFollowing, UserFollowingDto>()

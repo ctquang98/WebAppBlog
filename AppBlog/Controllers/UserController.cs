@@ -16,26 +16,10 @@ namespace AppBlog.Controllers
         [HttpGet]
         [AllowAnonymous]
         [Route("get_all")]
-        public async Task<IActionResult> GetAll(
-            [FromQuery] string? filterField = "",
-            [FromQuery] string? filterValue = "",
-            [FromQuery] string? sortField = "",
-            [FromQuery] bool sortAsc = true,
-            [FromQuery] int page = 1,
-            [FromQuery] int pageSize = 10
-        )
+        public async Task<IActionResult> GetAll([FromQuery] UserListParams requestParams)
         {
-            var users = await Mediator.Send(new List.Query
-            {
-                filterField = filterField,
-                filterValue = filterValue,
-                sortField = sortField,
-                sortAsc = sortAsc,
-                page = page,
-                pageSize = pageSize
-            });
-            var usersDto = Mapper.Map<List<UserListDto>>(users);
-            return Ok(ResponseResult<List<UserListDto>>.Success(usersDto));
+            var users = await Mediator.Send(new List.Query { listParams = requestParams });
+            return Ok(users);
         }
 
         [HttpGet]

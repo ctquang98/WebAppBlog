@@ -1,5 +1,9 @@
 ﻿using AppBlog.Data;
 using AppBlog.Models.Domain;
+using AppBlog.Models.Dto;
+using AppBlog.Utils;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -8,57 +12,58 @@ namespace AppBlog.Features.User
 {
     public class List
     {
-        public class Query : IRequest<List<AppUser>>
+        public class Query : IRequest<ResponseResult2<List<UserListDto>>>
         {
-            public string? filterField { get; set; }
-            public string? filterValue { get; set; }
-            public string? sortField { get; set; }
-            public bool sortAsc { get; set; } = true;
-            public int page { get; set; } = 1;
-            public int pageSize { get; set; } = 10;
+            public UserListParams listParams;
         }
 
-        public class Handler : IRequestHandler<Query, List<AppUser>>
+        public class Handler : IRequestHandler<Query, ResponseResult2<List<UserListDto>>>
         {
             private readonly AppDbContext db;
+            private readonly IMapper mapper;
 
-            public Handler(AppDbContext db)
+            public Handler(AppDbContext db, IMapper mapper)
             {
                 this.db = db;
+                this.mapper = mapper;
             }
 
-            public async Task<List<AppUser>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<ResponseResult2<List<UserListDto>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var queryable = db.Users.AsQueryable();
+                var queryable = db.Users
+                    .ProjectTo<UserListDto>(mapper.ConfigurationProvider)
+                    .AsQueryable();
+                var (filterField, filterValue, sortField, sortAsc, page, pageSize) = request.listParams;
 
-                if (!string.IsNullOrWhiteSpace(request.filterField) && !string.IsNullOrWhiteSpace(request.filterValue))
+                if (!string.IsNullOrWhiteSpace(filterField) && !string.IsNullOrWhiteSpace(filterValue))
                 {
-                    var field = request.filterField.ToLower();
+                    var field = filterField.ToLower();
                     if (field == "username")
                     {
-                        queryable = queryable.Where(x => x.UserName != null && x.UserName.Contains(request.filterValue));
+                        queryable = queryable.Where(x => x.UserName != null && x.UserName.Contains(filterValue));
                     }
                     else if (field == "nickname")
                     {
-                        queryable = queryable.Where(x => x.NickName.Contains(request.filterValue));
+                        queryable = queryable.Where(x => x.Nickname.Contains(filterValue));
                     }
                 }
 
-                if (!string.IsNullOrWhiteSpace(request.sortField))
+                if (!string.IsNullOrWhiteSpace(sortField))
                 {
-                    var field = request.sortField.ToLower();
+                    var field = sortField.ToLower();
                     if (field == "username")
                     {
-                        queryable = request.sortAsc ? queryable.OrderBy(x => x.UserName) : queryable.OrderByDescending(x => x.UserName);
+                        queryable = sortAsc ? queryable.OrderBy(x => x.UserName) : queryable.OrderByDescending(x => x.UserName);
                     }
                     else if (field == "nickname")
                     {
-                        queryable = request.sortAsc ? queryable.OrderBy(x => x.NickName) : queryable.OrderByDescending(x => x.NickName);
+                        queryable = sortAsc ? queryable.OrderBy(x => x.Nickname) : queryable.OrderByDescending(x => x.Nickname);
                     }
                 }
 
-                int skipResult = (request.page - 1) * request.pageSize;
-                return await queryable.Skip(skipResult).Take(request.pageSize).ToListAsync();
+                int skipResult = (page - 1) * pageSize;
+                var result = await queryable.Skip(skipResult).Take(pageSize).ToListAsync();
+                return ResponseResult2<List<UserListDto>>.Success(result);
             }
         }
     }
