@@ -12,12 +12,12 @@ namespace AppBlog.Features.User
 {
     public class List
     {
-        public class Query : IRequest<ResponseResult2<List<UserListDto>>>
+        public class Query : IRequest<AppPagination<UserListDto>>
         {
             public UserListParams listParams;
         }
 
-        public class Handler : IRequestHandler<Query, ResponseResult2<List<UserListDto>>>
+        public class Handler : IRequestHandler<Query, AppPagination<UserListDto>>
         {
             private readonly AppDbContext db;
             private readonly IMapper mapper;
@@ -28,7 +28,7 @@ namespace AppBlog.Features.User
                 this.mapper = mapper;
             }
 
-            public async Task<ResponseResult2<List<UserListDto>>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<AppPagination<UserListDto>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var queryable = db.Users
                     .ProjectTo<UserListDto>(mapper.ConfigurationProvider)
@@ -61,9 +61,8 @@ namespace AppBlog.Features.User
                     }
                 }
 
-                int skipResult = (page - 1) * pageSize;
-                var result = await queryable.Skip(skipResult).Take(pageSize).ToListAsync();
-                return ResponseResult2<List<UserListDto>>.Success(result);
+                var result = await AppPagination<UserListDto>.handlePagination(queryable, page, pageSize);
+                return result;
             }
         }
     }

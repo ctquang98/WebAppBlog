@@ -103,7 +103,7 @@ namespace AppBlog.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("boxers");
+                    b.ToTable("boxers", (string)null);
 
                     b.HasData(
                         new
@@ -140,7 +140,7 @@ namespace AppBlog.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("UserFollowers");
+                    b.ToTable("UserFollowers", (string)null);
                 });
 
             modelBuilder.Entity("AppBlog.Models.Domain.UserFollowing", b =>
@@ -155,7 +155,7 @@ namespace AppBlog.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("UserFollowings");
+                    b.ToTable("UserFollowings", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

@@ -2,6 +2,7 @@
 using AppBlog.Models.Domain;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AppBlog.Features.User
 {
@@ -31,6 +32,12 @@ namespace AppBlog.Features.User
                 //return result.Succeeded;
                 var user = await db.Users.FindAsync(request.Id);
                 if (user == null) return true;
+
+                var followings = await db.UserFollowings.Where(x => x.ObserverId == user.Id).ToListAsync();
+                if (followings.Any()) db.UserFollowings.RemoveRange(followings);
+
+                var followers = await db.UserFollowers.Where(x => x.ObserverId == user.Id).ToListAsync();
+                if (followers.Any()) db.UserFollowers.RemoveRange(followers);
 
                 db.Users.Remove(user);
                 return await db.SaveChangesAsync() > 0;
