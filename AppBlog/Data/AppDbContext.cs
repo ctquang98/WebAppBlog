@@ -24,7 +24,7 @@ namespace AppBlog.Data
                 x.HasOne(x => x.Observer)
                 .WithMany(x => x.followings)
                 .HasForeignKey(x => x.ObserverId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
             });
 
             builder.Entity<UserFollower>(x =>
@@ -33,7 +33,7 @@ namespace AppBlog.Data
                 x.HasOne(x => x.Observer)
                 .WithMany(x => x.followers)
                 .HasForeignKey(x => x.ObserverId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }

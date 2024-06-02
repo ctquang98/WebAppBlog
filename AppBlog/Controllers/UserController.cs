@@ -62,5 +62,13 @@ namespace AppBlog.Controllers
             var result = await Mediator.Send(new Following.Query { Id = id });
             return Ok(result);
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("emulated_error")]
+        public IActionResult EmulatedError()
+        {
+            throw new Exception("Some error occured");
+        }
     }
 }
